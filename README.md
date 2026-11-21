@@ -4,6 +4,8 @@ LINE 群組翻譯機器人「共鳴翻譯 ResoTalk」的產品首頁。單一 `i
 
 正式站：<https://line-translate-bot.jay12c.workers.dev/>
 
+新版預覽（GitHub Pages）：<https://tszhongyung0601-sketch.github.io/resotalk-site/>
+
 ## 檔案
 
 ```
@@ -14,7 +16,7 @@ assets/           主圖像照片放這裡
 主圖提示詞.md     主圖像的 ChatGPT 生圖提示詞
 ```
 
-主圖照片還沒放進去時，主圖區會顯示深綠色漸層，版面不會壞。
+兩張主圖都是用 ChatGPT 生成的 AI 圖像，不是真實人物。照片檔不存在時，主圖區會顯示深綠色漸層，版面不會壞。
 
 ## 本機預覽
 
@@ -35,6 +37,7 @@ python -m http.server 8898 --directory .
 - `index.html` 裡的 JS 與 CSS 沒有使用反引號和 `${}`，可以整份貼進 Worker 的樣板字串。
 - 使用說明、服務條款、隱私權政策的連結寫的是正式站完整網址，換網域時要一起改。
 - 主圖照片要有地方放：用 Workers 靜態資產，或把 `assets/hero-*.jpg` 的路徑改成圖片的完整網址。
+- `<head>` 裡的 `og:image`（分享連結時的預覽圖）目前指向 GitHub Pages 上的主圖，換網域時改成新的完整網址。
 
 ## 外部資源
 
