@@ -178,6 +178,14 @@ ul,ol{padding:0;list-style:none}
 .step h3{font-size:19px;margin-bottom:4px}
 .step p{color:var(--muted);font-size:15.5px}
 .how__more{margin-top:18px;font-size:15px;color:var(--muted)}
+.menu-demo{display:grid;grid-template-columns:minmax(0,360px) 1fr;gap:56px;align-items:center;margin-top:64px}
+.menu-demo h3{font-family:var(--serif);font-weight:600;font-size:clamp(23px,2.6vw,30px);line-height:1.4}
+.menu-demo__lead{color:var(--muted);margin-top:12px}
+.linecard{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:26px 22px 22px;box-shadow:var(--shadow);display:grid;gap:8px}
+.linecard__title{font-weight:700;font-size:19px;line-height:1.3}
+.linecard__sub{font-size:13px;color:var(--muted);margin-bottom:12px}
+.linecard__btn{display:block;text-align:center;font-weight:500;font-size:15px;line-height:1.3;padding:12px 10px;border-radius:10px;background:var(--bg-soft);border:1px solid var(--line);color:var(--ink)}
+.linecard__btn--main{background:var(--green-deep);border-color:transparent;color:#fff}
 .qr{text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:linear-gradient(160deg,var(--green-soft),var(--card) 70%)}
 .qr__img{background:#fff;border-radius:18px;padding:12px;box-shadow:var(--shadow-sm);border:1px solid var(--line)}
 .qr__img img{width:176px;height:176px}
@@ -270,6 +278,8 @@ footer{background:#0b1410;color:#a9b8af;padding:36px 0;font-size:14px}
   .demo{grid-template-columns:1fr;gap:44px}
   .grid3{grid-template-columns:repeat(2,1fr)}
   .how{grid-template-columns:1fr}
+  .menu-demo{grid-template-columns:1fr;gap:32px;margin-top:48px}
+  .linecard{max-width:380px;width:100%;margin:0 auto}
   .final__in{grid-template-columns:1fr}
   .final__qr{display:none}
 }
@@ -412,7 +422,7 @@ footer{background:#0b1410;color:#a9b8af;padding:36px 0;font-size:14px}
           <div class="msg msg--bot" style="--i:1">
             <span class="avatar avatar--bot" aria-hidden="true"><svg viewBox="0 0 24 24" fill="#fff"><path d="M5 4h14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-7l-5 4v-4H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/></svg></span>
             <div>
-              <span class="msg__name">共鳴翻譯 ResoTalk</span>
+              <span class="msg__name">共鳴翻譯</span>
               <div class="bubble">
                 <div class="quote"><b>陳課長</b><span>明天早上 7 點開始加班，記得戴安全帽。</span></div>
                 <div class="tr"><img class="flag" data-flag src="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/flags/4x3/vn.svg" alt="" width="22" height="17"><span data-k="m1" lang="vi">Sáng mai 7 giờ bắt đầu tăng ca, nhớ đội mũ bảo hộ nhé.</span></div>
@@ -431,7 +441,7 @@ footer{background:#0b1410;color:#a9b8af;padding:36px 0;font-size:14px}
           <div class="msg msg--bot" style="--i:3">
             <span class="avatar avatar--bot" aria-hidden="true"><svg viewBox="0 0 24 24" fill="#fff"><path d="M5 4h14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-7l-5 4v-4H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/></svg></span>
             <div>
-              <span class="msg__name">共鳴翻譯 ResoTalk</span>
+              <span class="msg__name">共鳴翻譯</span>
               <div class="bubble">
                 <div class="quote"><b data-k="name">Minh</b><span data-k="m2" lang="vi">Dạ em biết rồi ạ. Thứ bảy em xin nghỉ một ngày được không ạ?</span></div>
                 <div class="tr"><img class="flag" src="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/flags/4x3/tw.svg" alt="" width="22" height="17"><span>好的，我知道了。星期六我可以請假一天嗎？</span></div>
@@ -444,7 +454,7 @@ footer{background:#0b1410;color:#a9b8af;padding:36px 0;font-size:14px}
           <div class="msg msg--bot" style="--i:5">
             <span class="avatar avatar--bot" aria-hidden="true"><svg viewBox="0 0 24 24" fill="#fff"><path d="M5 4h14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-7l-5 4v-4H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/></svg></span>
             <div>
-              <span class="msg__name">共鳴翻譯 ResoTalk</span>
+              <span class="msg__name">共鳴翻譯</span>
               <div class="bubble">
                 <div class="quote"><b>陳課長</b><span>可以，記得先跟組長換班。</span></div>
                 <div class="tr"><img class="flag" data-flag src="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/flags/4x3/vn.svg" alt="" width="22" height="17"><span data-k="m3" lang="vi">Được, nhớ đổi ca với tổ trưởng trước nhé.</span></div>
@@ -549,7 +559,7 @@ footer{background:#0b1410;color:#a9b8af;padding:36px 0;font-size:14px}
       <div data-reveal>
         <ol class="steps">
           <li class="card step"><span class="step__num">1</span><div><h3>把機器人加進群組</h3><p>把「共鳴翻譯 ResoTalk」LINE 官方帳號加入你的群組（員工與主管同一群組即可）。</p></div></li>
-          <li class="card step"><span class="step__num">2</span><div><h3>開通方案</h3><p>在群組輸入 <code class="cmd">/buy</code> 購買（新群組可先免費試用 7 天），付款完成後群組自動啟用。</p></div></li>
+          <li class="card step"><span class="step__num">2</span><div><h3>開通方案</h3><p>在群組輸入 <code class="cmd">/buy</code>，或按選單上的「購買／續訂」（新群組可先免費試用 7 天），付款完成後群組自動啟用。</p></div></li>
           <li class="card step"><span class="step__num">3</span><div><h3>選擇語言</h3><p>輸入 <code class="cmd">/menu</code>，按「切換語言」選擇外籍員工的語言。之後群組的訊息就會自動翻譯。</p></div></li>
         </ol>
         <p class="how__more">完整指令與多語說明：<a href="https://line-translate-bot.jay12c.workers.dev/guide">使用說明</a></p>
@@ -560,6 +570,33 @@ footer{background:#0b1410;color:#a9b8af;padding:36px 0;font-size:14px}
         <p>LINE ID：@303cuvvs</p>
         <a class="btn btn--line btn--block" href="https://line.me/R/ti/p/@303cuvvs" rel="noopener">加入 LINE 官方帳號</a>
       </aside>
+    </div>
+
+    <div class="menu-demo" data-reveal>
+      <div class="linecard" role="img" aria-label="機器人按鈕選單示意：切換語言、翻譯剛傳的圖片、目前狀態、暫停翻譯、繼續翻譯、購買／續訂、使用說明、聯絡客服">
+        <p class="linecard__title">共鳴翻譯 ResoTalk</p>
+        <p class="linecard__sub">點按鈕就能使用，不用打指令。Tap a button, no typing needed.</p>
+        <span class="linecard__btn linecard__btn--main">切換語言 / Language</span>
+        <span class="linecard__btn">翻譯剛傳的圖片 / Translate</span>
+        <span class="linecard__btn">目前狀態 / Status</span>
+        <span class="linecard__btn">暫停翻譯 / Pause</span>
+        <span class="linecard__btn">繼續翻譯 / Resume</span>
+        <span class="linecard__btn">購買／續訂 / Buy</span>
+        <span class="linecard__btn">使用說明 / Guide</span>
+        <span class="linecard__btn">聯絡客服 / Support</span>
+      </div>
+      <div>
+        <p class="kicker">按鈕選單</p>
+        <h3>不用記指令，按按鈕就好</h3>
+        <p class="menu-demo__lead">在群組輸入 <code class="cmd">/menu</code>，機器人會送出這張選單。常用的操作都在上面，中英文並列。</p>
+        <ul class="ticks">
+          <li><span><b>切換語言</b>：選擇群組要互譯的語言</span></li>
+          <li><span><b>翻譯剛傳的圖片</b>：翻出圖片裡的文字（1 張圖片算 3 則額度）</span></li>
+          <li><span><b>目前狀態</b>：查看到期日與本月用量</span></li>
+          <li><span><b>暫停翻譯／繼續翻譯</b>：暫時不需要時可以先關掉</span></li>
+        </ul>
+        <p class="demo__note">示意畫面，實際選單以機器人在群組中的顯示為準。</p>
+      </div>
     </div>
   </div>
 </section>
@@ -606,6 +643,7 @@ footer{background:#0b1410;color:#a9b8af;padding:36px 0;font-size:14px}
       <li>每個群組每月可翻譯 <b>1500 則</b>（文字每則算 1 則，圖片翻譯每張算 3 則），用完當月暫停，次月 1 日（台灣時間）恢復。</li>
       <li>價格為新台幣；付款方式：<b>信用卡</b>，由<b>藍新金流</b>處理，本服務不會取得您的完整卡號。</li>
       <li>可開立發票，請聯絡客服提供抬頭與統一編號。</li>
+      <li>新的群組首次訂閱享 7 天免費試用（試用期間翻譯總量上限 <b>300 則</b>）；曾經試用過的群組綁定後立即扣款。</li>
     </ul>
   </div>
 </section>
@@ -654,8 +692,12 @@ footer{background:#0b1410;color:#a9b8af;padding:36px 0;font-size:14px}
         <p>文字每則算 1 則，圖片翻譯每張算 3 則（圖中沒有文字或失敗不扣）；「好」「ok」「哈哈」與純表情、網址不計入。用完當月暫停，次月 1 日（台灣時間）恢復。隨時輸入 <code class="cmd">/status</code> 可查看到期日與本月用量。</p>
       </details>
       <details>
+        <summary>免費試用怎麼開始？需要綁信用卡嗎？</summary>
+        <p>需要。新的群組首次訂閱月訂閱，享 7 天免費試用（試用期間翻譯總量上限 300 則）。綁定信用卡時，藍新金流會先授權 NT$10 以確認卡片有效，並立即取消，不會請款。試用結束後的首次扣款日才會第一次扣款 NT$99；在那之前輸入 <code class="cmd">/cancel</code> 取消，不會扣款。曾經試用過的群組綁定後立即扣款。</p>
+      </details>
+      <details>
         <summary>圖片、語音、影片也能翻譯嗎？</summary>
-        <p>目前自動翻譯文字訊息；圖片裡的文字可回覆該圖片輸入 <code class="cmd">/img</code> 翻譯（1 張圖片算 3 則額度）。語音、影片、檔案不處理。</p>
+        <p>目前自動翻譯文字訊息；圖片裡的文字可回覆該圖片輸入 <code class="cmd">/img</code> 翻譯（1 張圖片算 3 則額度），也可以在傳完圖片後 10 分鐘內輸入 <code class="cmd">/img</code>，或按選單上的「翻譯剛傳的圖片」。語音、影片、檔案不處理。</p>
       </details>
       <details>
         <summary>怎麼取消訂閱？可以退費嗎？</summary>
