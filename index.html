@@ -1,0 +1,765 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>共鳴翻譯 ResoTalk｜LINE 群組即時翻譯（中文與 12 種語言）</title>
+<meta name="description" content="共鳴翻譯 ResoTalk：LINE 群組自動翻譯機器人，中文與英文、越南文、印尼文、菲律賓文等 12 種語言即時互譯，適合使用外籍員工的企業與家庭。">
+<meta name="theme-color" content="#048848">
+<link rel="canonical" href="https://line-translate-bot.jay12c.workers.dev/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="共鳴翻譯 ResoTalk｜LINE 群組即時翻譯">
+<meta property="og:description" content="把機器人加進 LINE 群組，每一則文字訊息自動翻成彼此的語言。中文與 12 種語言互譯，新群組免費試用 7 天。">
+<meta property="og:url" content="https://line-translate-bot.jay12c.workers.dev/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='10' fill='%23048848'/%3E%3Cpath d='M11 10h18a3 3 0 0 1 3 3v11a3 3 0 0 1-3 3H19l-6 5v-5h-2a3 3 0 0 1-3-3V13a3 3 0 0 1 3-3z' fill='%23fff'/%3E%3Ccircle cx='15' cy='18.5' r='1.8' fill='%23048848'/%3E%3Ccircle cx='20' cy='18.5' r='1.8' fill='%23F2782A'/%3E%3Ccircle cx='25' cy='18.5' r='1.8' fill='%23048848'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;700&display=swap" rel="stylesheet">
+<script>document.documentElement.className='js'</script>
+<style>
+:root{
+  color-scheme:light dark;
+  --green:#06C755;--green-deep:#048848;--green-ink:#052e16;--green-soft:#e9f7ef;--brand-text:#04793f;
+  --orange:#F2782A;--orange-bright:#FFA033;--orange-ink:#2b1500;--orange-text:#B94E0A;--orange-soft:#fff3e6;
+  --bg:#ffffff;--bg-soft:#f3f7f4;--card:#ffffff;--ink:#16211b;--muted:#56655c;--line:#e0e8e3;
+  --shadow:0 12px 32px rgba(10,45,27,.09);--shadow-sm:0 4px 14px rgba(10,45,27,.06);
+  --radius:22px;
+  --serif:"Noto Serif TC","Songti TC",serif;
+  --sans:"Noto Sans TC","PingFang TC","Microsoft JhengHei","Heiti TC",system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#0d1310;--bg-soft:#121a16;--card:#17201b;--ink:#e8f0eb;--muted:#9cafa4;--line:#27342c;
+  --green-soft:#12281c;--brand-text:#45d98a;--orange-text:#FFB25E;--orange-soft:#2b1e10;
+  --shadow:0 12px 32px rgba(0,0,0,.4);--shadow-sm:0 4px 14px rgba(0,0,0,.3);
+}}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:84px;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.75 var(--sans);-webkit-font-smoothing:antialiased}
+img{max-width:100%;display:block}
+a{color:var(--brand-text)}
+h1,h2,h3,p,ul,ol,dl,dd{margin:0}
+ul,ol{padding:0;list-style:none}
+.wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+.cmd{font:600 .92em ui-monospace,"SFMono-Regular",Consolas,monospace;background:var(--green-soft);color:var(--brand-text);padding:2px 8px;border-radius:8px;white-space:nowrap}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:15px 30px;border-radius:999px;font-weight:700;font-size:16px;line-height:1.3;text-decoration:none;border:1.5px solid transparent;transition:transform .15s ease,box-shadow .15s ease,background .15s ease}
+.btn svg{width:20px;height:20px;flex:none}
+.btn:hover{transform:translateY(-2px)}
+.btn--line{background:var(--green);color:var(--green-ink);box-shadow:0 10px 24px rgba(6,199,85,.32)}
+.btn--line:hover{box-shadow:0 14px 30px rgba(6,199,85,.42)}
+.btn--ghost{border-color:rgba(255,255,255,.7);color:#fff}
+.btn--ghost:hover{background:rgba(255,255,255,.12)}
+.btn--outline{border-color:var(--brand-text);color:var(--brand-text)}
+.btn--outline:hover{background:var(--green-soft)}
+.btn--block{display:flex;width:100%}
+
+/* header */
+.site-header{position:sticky;top:0;z-index:50;background:var(--green-deep);color:#fff;transition:box-shadow .2s ease}
+.site-header.is-stuck{box-shadow:0 6px 24px rgba(0,0,0,.18)}
+.site-header__in{display:flex;align-items:center;gap:20px;height:68px}
+.brand{display:flex;align-items:center;gap:10px;color:#fff;text-decoration:none;margin-right:auto}
+.brand svg{width:40px;height:36px;flex:none}
+.brand b{font-size:21px;letter-spacing:.01em;line-height:1.1;display:block}
+.brand small{display:block;font-size:11.5px;letter-spacing:.3em;opacity:.9;line-height:1.3}
+.nav{display:flex;align-items:center;gap:4px}
+.nav a{color:#fff;text-decoration:none;font-size:15px;font-weight:500;padding:8px 11px;border-radius:10px;white-space:nowrap}
+.nav a:hover{background:rgba(255,255,255,.14)}
+.header-cta{background:var(--orange-bright);color:var(--orange-ink);font-weight:700;font-size:15px;text-decoration:none;padding:9px 20px;border-radius:999px;white-space:nowrap;transition:transform .15s ease}
+.header-cta:hover{transform:translateY(-1px)}
+.nav-toggle{display:none;width:42px;height:42px;border:0;border-radius:12px;background:rgba(255,255,255,.14);color:#fff;cursor:pointer;padding:0;align-items:center;justify-content:center}
+.nav-toggle svg{width:22px;height:22px}
+
+/* hero */
+.hero{position:relative;color:#fff;overflow:hidden;isolation:isolate;
+  background:radial-gradient(900px 520px at 82% 28%,rgba(6,199,85,.3),transparent 62%),radial-gradient(620px 420px at 68% 88%,rgba(255,160,51,.2),transparent 62%),linear-gradient(135deg,#0c3b27,#06271a 60%,#081c14)}
+.hero__media{position:absolute;inset:0;z-index:-2}
+.hero__media img{width:100%;height:100%;object-fit:cover;object-position:72% center}
+.hero__shade{position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,rgba(5,20,13,.9) 0%,rgba(5,20,13,.72) 34%,rgba(5,20,13,.28) 62%,rgba(5,20,13,.04) 100%),linear-gradient(0deg,rgba(5,20,13,.55),rgba(5,20,13,0) 40%)}
+.hero__in{min-height:min(820px,calc(100svh - 68px));display:flex;flex-direction:column;justify-content:center;padding-top:72px;padding-bottom:136px}
+.hero__text{max-width:640px}
+.kicker{font-size:13px;font-weight:700;letter-spacing:.18em;color:var(--orange-text);margin-bottom:14px}
+.kicker--light{color:#FFC078}
+.hero h1{font-family:var(--serif);font-weight:600;font-size:clamp(36px,5.6vw,66px);line-height:1.16;letter-spacing:.02em;text-shadow:0 2px 24px rgba(0,0,0,.35)}
+.hero h1 em{font-style:normal;color:#FFC078}
+.hero__lead{font-size:clamp(16px,1.5vw,19px);line-height:1.85;margin-top:22px;max-width:560px;color:rgba(255,255,255,.94);text-shadow:0 1px 12px rgba(0,0,0,.4)}
+.hero__cta{display:flex;flex-wrap:wrap;gap:14px;margin-top:32px}
+.hero__note{margin-top:20px;font-size:14px;color:rgba(255,255,255,.88);display:flex;flex-wrap:wrap;gap:6px 18px}
+.hero__note span{display:inline-flex;align-items:center;gap:7px}
+.hero__note span::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--orange-bright)}
+
+/* quick strip */
+.quick{position:relative;z-index:2;margin-top:-64px}
+.quick__grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.quick__item{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px 22px;box-shadow:var(--shadow);display:flex;gap:14px;align-items:flex-start}
+.ico{flex:none;width:44px;height:44px;border-radius:13px;background:var(--green-soft);color:var(--brand-text);display:grid;place-items:center}
+.ico svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.ico--orange{background:var(--orange-soft);color:var(--orange-text)}
+.quick__item b{display:block;font-size:18px;line-height:1.35}
+.quick__item div span{display:block;font-size:14px;color:var(--muted);line-height:1.55;margin-top:2px}
+
+/* sections */
+.section{padding:104px 0}
+.section--soft{background:var(--bg-soft)}
+.section__head{text-align:center;max-width:720px;margin:0 auto 52px}
+.section__head h2,.h2{font-family:var(--serif);font-weight:600;font-size:clamp(27px,3.5vw,42px);line-height:1.32;letter-spacing:.01em}
+.section__head p.sub{color:var(--muted);font-size:17px;margin-top:14px}
+
+/* demo */
+.demo{display:grid;grid-template-columns:1.05fr .95fr;gap:64px;align-items:center}
+.demo__copy p.lead{color:var(--muted);font-size:17px;margin-top:18px}
+.ticks{margin-top:26px;display:grid;gap:12px}
+.ticks li{display:flex;gap:12px;align-items:flex-start;font-weight:500}
+.ticks li::before{content:"";flex:none;width:22px;height:22px;margin-top:3px;border-radius:50%;background:var(--green) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23052e16' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6.5 12.5 3.5 3.5 7.5-8'/%3E%3C/svg%3E") center/15px no-repeat}
+.switch{margin-top:34px}
+.switch__label{font-size:14px;color:var(--muted);margin-bottom:10px}
+.chips{display:flex;flex-wrap:wrap;gap:10px}
+.chip{display:inline-flex;align-items:center;gap:8px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:8px 16px 8px 10px;font:600 15px/1.3 var(--sans);cursor:pointer;transition:border-color .15s ease,background .15s ease}
+.chip:hover{border-color:var(--brand-text)}
+.chip[aria-pressed="true"]{border-color:var(--brand-text);background:var(--green-soft);color:var(--brand-text)}
+.flag{display:inline-block;width:22px;height:16.5px;border-radius:3px;object-fit:cover;box-shadow:0 0 0 1px rgba(0,0,0,.1);flex:none}
+.demo__note{font-size:13px;color:var(--muted);margin-top:18px}
+
+.phone{width:min(372px,100%);margin:0 auto;background:#0f1713;border-radius:46px;padding:11px;box-shadow:0 34px 70px rgba(8,45,26,.3),0 0 0 1px rgba(255,255,255,.08) inset}
+.phone__screen{border-radius:36px;overflow:hidden;background:#c9d8e8;color:#1a1f24;display:flex;flex-direction:column}
+.phone__top{background:#fff;padding:13px 18px 12px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #e3e8ee;font-size:15px;font-weight:700}
+.phone__top svg{width:18px;height:18px;fill:none;stroke:#1a1f24;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.phone__top small{font-weight:500;color:#6a7480}
+.chat{padding:16px 12px 18px;display:flex;flex-direction:column;gap:11px;min-height:470px}
+.msg{display:flex;gap:8px;align-items:flex-start}
+.msg--me{justify-content:flex-end}
+.avatar{flex:none;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:14px;color:#fff;background:#F2782A}
+.avatar--bot{background:#048848}
+.avatar--bot svg{width:19px;height:19px}
+.msg__name{display:block;font-size:11.5px;color:#48535f;margin:0 0 3px 4px}
+.bubble{background:#fff;border-radius:18px;padding:9px 13px;font-size:14.5px;line-height:1.55;max-width:236px;box-shadow:0 1px 1px rgba(0,0,0,.07);overflow-wrap:anywhere}
+.msg--me .bubble{background:#9eea8c;border-top-right-radius:6px}
+.msg--them .bubble,.msg--bot .bubble{border-top-left-radius:6px}
+.quote{border-left:3px solid #06C755;padding-left:8px;margin-bottom:7px;font-size:12px;line-height:1.45;color:#66717d}
+.quote b{display:block;color:#3a444f}
+.quote span{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px}
+.tr{display:flex;gap:8px;align-items:flex-start}
+.tr .flag{margin-top:3px}
+.phone__input{background:#fff;border-top:1px solid #e3e8ee;padding:10px 14px;display:flex;align-items:center;gap:10px;color:#9aa3ad;font-size:14px}
+.phone__input i{flex:1;font-style:normal;background:#f1f4f7;border-radius:999px;padding:7px 14px}
+.phone__input svg{width:22px;height:22px;fill:#06C755}
+
+/* cards */
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:28px;box-shadow:var(--shadow-sm)}
+.feature .ico{width:50px;height:50px;border-radius:15px;margin-bottom:18px}
+.feature .ico svg{width:26px;height:26px}
+.feature h3{font-size:19px;line-height:1.45;margin-bottom:8px}
+.feature p{color:var(--muted);font-size:15.5px}
+.disclaimer{margin:32px auto 0;max-width:900px;font-size:14px;color:var(--muted);background:var(--card);border:1px dashed var(--line);border-radius:16px;padding:16px 20px}
+
+/* languages */
+.langs{display:grid;grid-template-columns:repeat(6,1fr);gap:14px}
+.lang{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px 12px 16px;text-align:center;transition:transform .2s ease,box-shadow .2s ease}
+.lang:hover{transform:translateY(-4px);box-shadow:var(--shadow)}
+.lang img{width:56px;height:42px;border-radius:8px;object-fit:cover;margin:0 auto 12px;box-shadow:0 0 0 1px rgba(0,0,0,.08),0 4px 10px rgba(0,0,0,.08)}
+.lang b{display:block;font-size:16px;line-height:1.4}
+.lang span{display:block;font-size:13.5px;color:var(--muted)}
+.bignum{font-family:var(--serif);font-weight:700;color:var(--orange);font-size:1.5em;line-height:1;padding:0 .08em}
+.scenes{margin-top:56px;text-align:center}
+.scenes p{color:var(--muted);margin-bottom:18px}
+.scenes ul{display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
+.scenes li{display:inline-flex;align-items:center;gap:9px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:9px 20px 9px 12px;font-weight:600}
+.scenes li svg{width:22px;height:22px;fill:none;stroke:var(--orange-text);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+/* how */
+.how{display:grid;grid-template-columns:1.25fr .75fr;gap:28px;align-items:stretch}
+.steps{display:grid;gap:16px}
+.step{display:flex;gap:20px;align-items:flex-start}
+.step__num{flex:none;width:52px;height:52px;border-radius:16px;background:var(--orange-bright);color:var(--orange-ink);font:700 24px/52px var(--serif);text-align:center}
+.step h3{font-size:19px;margin-bottom:4px}
+.step p{color:var(--muted);font-size:15.5px}
+.how__more{margin-top:18px;font-size:15px;color:var(--muted)}
+.qr{text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:linear-gradient(160deg,var(--green-soft),var(--card) 70%)}
+.qr__img{background:#fff;border-radius:18px;padding:12px;box-shadow:var(--shadow-sm);border:1px solid var(--line)}
+.qr__img img{width:176px;height:176px}
+.qr h3{font-size:18px;line-height:1.5}
+.qr p{font-size:14px;color:var(--muted)}
+
+/* pricing */
+.plans{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;max-width:880px;margin:0 auto}
+.plan{position:relative;display:flex;flex-direction:column;padding:34px 30px 30px}
+.plan--hot{border:2px solid var(--green);box-shadow:var(--shadow)}
+.plan__badge{position:absolute;top:-15px;left:28px;background:var(--orange-bright);color:var(--orange-ink);font-weight:700;font-size:13.5px;padding:5px 14px;border-radius:999px}
+.plan h3{font-size:20px}
+.plan h3 small{display:block;font-size:13.5px;font-weight:500;color:var(--muted)}
+.plan .plan__price{font-family:var(--serif);font-weight:700;font-size:50px;line-height:1.1;margin:18px 0 14px;letter-spacing:.01em;color:var(--ink)}
+.plan__price small{font:500 16px var(--sans);color:var(--muted);margin-left:6px}
+.plan__desc{color:var(--muted);font-size:15.5px;flex:1}
+.plan .btn{margin-top:24px}
+.plan__hint{margin-top:12px;text-align:center;font-size:13.5px;color:var(--muted)}
+.notes{max-width:880px;margin:28px auto 0;display:grid;gap:10px;font-size:15.5px}
+.notes li,.policy li{position:relative;padding-left:22px}
+.notes li::before,.policy li::before{content:"";position:absolute;left:4px;top:.72em;width:7px;height:7px;border-radius:50%;background:var(--green)}
+
+/* policy / faq / company */
+.narrow{max-width:880px;margin:0 auto}
+.policy{display:grid;gap:14px;font-size:15.5px}
+.faq details{border-bottom:1px solid var(--line)}
+.faq details:first-child{border-top:1px solid var(--line)}
+.faq summary{list-style:none;cursor:pointer;position:relative;padding:21px 46px 21px 2px;font-weight:700;font-size:17px;line-height:1.5}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"";position:absolute;right:8px;top:50%;width:22px;height:22px;margin-top:-11px;border-radius:50%;background:var(--green-soft) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2304793f' stroke-width='2.6' stroke-linecap='round'%3E%3Cpath d='M12 6v12M6 12h12'/%3E%3C/svg%3E") center/13px no-repeat;transition:transform .2s ease}
+.faq details[open] summary::after{transform:rotate(45deg)}
+@media (prefers-color-scheme:dark){.faq summary::after{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2345d98a' stroke-width='2.6' stroke-linecap='round'%3E%3Cpath d='M12 6v12M6 12h12'/%3E%3C/svg%3E")}}
+.faq details p{color:var(--muted);padding:0 46px 22px 2px;font-size:15.5px}
+.rows{display:grid}
+.rows div{display:grid;grid-template-columns:120px 1fr;gap:16px;padding:14px 0;border-bottom:1px solid var(--line)}
+.rows div:last-child{border-bottom:0;padding-bottom:0}
+.rows div:first-child{padding-top:0}
+.rows dt{color:var(--muted);font-size:15px}
+.rows dd{font-weight:500;overflow-wrap:anywhere}
+
+/* final cta */
+.final{background:radial-gradient(700px 380px at 88% 10%,rgba(255,160,51,.22),transparent 60%),linear-gradient(135deg,#048848,#03653a);color:#fff;padding:88px 0}
+.final__in{display:grid;grid-template-columns:1fr auto;gap:48px;align-items:center}
+.final h2{font-family:var(--serif);font-weight:600;font-size:clamp(28px,3.8vw,44px);line-height:1.3}
+.final p{margin-top:14px;font-size:17px;color:rgba(255,255,255,.92);max-width:560px}
+.final .btn{margin-top:28px}
+.btn--white{background:#fff;color:#04602f;box-shadow:0 10px 26px rgba(0,0,0,.18)}
+.final__qr{background:#fff;border-radius:22px;padding:14px;text-align:center;color:#16211b;box-shadow:0 18px 40px rgba(0,0,0,.2)}
+.final__qr img{width:168px;height:168px}
+.final__qr span{display:block;font-size:13px;font-weight:700;margin-top:6px}
+
+footer{background:#0b1410;color:#a9b8af;padding:36px 0;font-size:14px}
+.foot{display:flex;flex-wrap:wrap;gap:12px 28px;align-items:center;justify-content:space-between}
+.foot nav{display:flex;flex-wrap:wrap;gap:6px 20px}
+.foot a{color:#d7e2db;text-decoration:none}
+.foot a:hover{text-decoration:underline}
+
+/* reveal */
+.js [data-reveal]{opacity:0;transform:translateY(20px);transition:opacity .7s ease,transform .7s ease}
+.js [data-reveal].is-in{opacity:1;transform:none}
+.js .chat .msg{opacity:0}
+.js .chat.is-in .msg{animation:pop .45s ease both;animation-delay:calc(var(--i) * .65s + .15s)}
+@keyframes pop{from{opacity:0;transform:translateY(10px) scale(.97)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .js [data-reveal]{opacity:1;transform:none;transition:none}
+  .js .chat .msg{opacity:1;animation:none!important}
+  .btn,.lang,.header-cta{transition:none}
+}
+
+/* responsive */
+@media (max-width:1100px){
+  .nav-toggle{display:inline-flex}
+  .nav{position:absolute;left:0;right:0;top:68px;background:var(--green-deep);flex-direction:column;align-items:stretch;gap:0;padding:8px 16px 16px;display:none;box-shadow:0 18px 30px rgba(0,0,0,.22)}
+  .nav.is-open{display:flex}
+  .nav a{padding:13px 12px;font-size:16px;border-bottom:1px solid rgba(255,255,255,.14);border-radius:0}
+  .nav a:last-child{border-bottom:0}
+  .quick__grid{grid-template-columns:repeat(2,1fr)}
+  .langs{grid-template-columns:repeat(4,1fr)}
+}
+@media (max-width:900px){
+  .demo{grid-template-columns:1fr;gap:44px}
+  .grid3{grid-template-columns:repeat(2,1fr)}
+  .how{grid-template-columns:1fr}
+  .final__in{grid-template-columns:1fr}
+  .final__qr{display:none}
+}
+@media (max-width:720px){
+  .wrap{padding:0 18px}
+  .section{padding:68px 0}
+  .section__head{margin-bottom:36px}
+  .site-header__in{gap:10px;height:60px}
+  .nav{top:60px}
+  html{scroll-padding-top:72px}
+  .brand svg{width:34px;height:31px}
+  .brand b{font-size:18px}
+  .brand small{font-size:10.5px}
+  .header-cta{padding:8px 15px;font-size:14px}
+  .hero__media img{object-position:center 30%}
+  .hero__shade{background:linear-gradient(180deg,rgba(5,20,13,.2) 0%,rgba(5,20,13,.3) 30%,rgba(5,20,13,.86) 66%,rgba(5,20,13,.95) 100%)}
+  .hero__in{min-height:calc(100svh - 60px);justify-content:flex-end;padding-top:150px;padding-bottom:96px}
+  .hero__cta .btn{flex:1 1 100%}
+  .quick{margin-top:-52px}
+  .quick__grid{gap:10px}
+  .quick__item{padding:14px;gap:10px;flex-direction:column}
+  .quick__item b{font-size:16px}
+  .quick__item div span{font-size:13px}
+  .ico{width:38px;height:38px;border-radius:11px}
+  .ico svg{width:20px;height:20px}
+  .grid3{grid-template-columns:1fr}
+  .card{padding:22px}
+  .langs{grid-template-columns:repeat(3,1fr);gap:10px}
+  .lang{padding:16px 6px 12px}
+  .lang img{width:46px;height:34.5px}
+  .lang b{font-size:14px}
+  .lang span{font-size:12.5px}
+  .plans{grid-template-columns:1fr;gap:28px}
+  .plan .plan__price{font-size:44px}
+  .qr__img{display:none}
+  .rows div{grid-template-columns:1fr;gap:2px}
+  .final{padding:64px 0}
+  .final .btn{display:flex}
+  .foot{flex-direction:column;align-items:flex-start}
+}
+</style>
+</head>
+<body>
+
+<header class="site-header" id="top">
+  <div class="wrap site-header__in">
+    <a class="brand" href="#intro" aria-label="共鳴翻譯 ResoTalk 首頁">
+      <svg viewBox="0 0 44 40" aria-hidden="true">
+        <path d="M19 3h19a4 4 0 0 1 4 4v13a4 4 0 0 1-4 4h-1v5l-6-5H19a4 4 0 0 1-4-4V7a4 4 0 0 1 4-4z" fill="#FFA033"/>
+        <path d="M6 12h19a4 4 0 0 1 4 4v13a4 4 0 0 1-4 4H13l-6 5v-5H6a4 4 0 0 1-4-4V16a4 4 0 0 1 4-4z" fill="#fff"/>
+        <text x="15.5" y="27.6" text-anchor="middle" font-size="13.5" font-weight="700" fill="#048848" font-family="'Noto Sans TC','PingFang TC','Microsoft JhengHei',sans-serif">文</text>
+        <text x="35.6" y="11.6" text-anchor="middle" font-size="9.5" font-weight="700" fill="#2b1500" font-family="Arial,Helvetica,sans-serif">A</text>
+      </svg>
+      <span><b>ResoTalk</b><small>共鳴翻譯</small></span>
+    </a>
+    <nav class="nav" id="nav" aria-label="主選單">
+      <a href="#features">特色</a>
+      <a href="#how">使用方式</a>
+      <a href="#pricing">價格與付款</a>
+      <a href="#policy">取消與退款</a>
+      <a href="#faq">常見問題</a>
+      <a href="#company">公司與聯絡</a>
+      <a href="https://line-translate-bot.jay12c.workers.dev/guide">使用說明</a>
+    </nav>
+    <a class="header-cta" href="https://line.me/R/ti/p/@303cuvvs" rel="noopener">加入 LINE</a>
+    <button class="nav-toggle" type="button" aria-controls="nav" aria-expanded="false" aria-label="開啟選單">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    </button>
+  </div>
+</header>
+
+<main>
+
+<!-- ===== 主圖像 ===== -->
+<section class="hero" id="intro">
+  <picture class="hero__media">
+    <source media="(max-width:720px)" srcset="assets/hero-mobile.jpg">
+    <img src="assets/hero-desktop.jpg" alt="工廠裡，台灣主管與外籍同事一起看著手機上的 LINE 群組訊息" fetchpriority="high" onerror="var p=this.parentNode,s=p.querySelector('source');if(s){s.remove()}else{p.remove()}">
+  </picture>
+  <div class="hero__shade"></div>
+  <div class="wrap hero__in">
+    <div class="hero__text">
+      <p class="kicker kicker--light">RESOTALK 群組翻譯</p>
+      <h1>各說各的話，<br>群組裡<em>都看得懂</em>。</h1>
+      <p class="hero__lead">把共鳴翻譯 ResoTalk 加進 LINE 群組，每一則文字訊息自動翻成大家看得懂的語言。中文與 12 種語言互譯，外籍夥伴不用設定，直接打母語就好。</p>
+      <div class="hero__cta">
+        <a class="btn btn--line" href="https://line.me/R/ti/p/@303cuvvs" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3C6.5 3 2 6.6 2 11.1c0 2.6 1.5 4.9 3.9 6.4-.2.7-.7 2.4-.8 2.8-.1.5.2.5.4.4.2-.1 2.7-1.8 3.8-2.5.9.2 1.8.3 2.7.3 5.5 0 10-3.6 10-8.1S17.5 3 12 3z"/></svg>
+          加入 LINE 官方帳號
+        </a>
+        <a class="btn btn--ghost" href="https://line-translate-bot.jay12c.workers.dev/guide">看使用說明</a>
+      </div>
+      <p class="hero__note"><span>新群組免費試用 7 天</span><span>之後 NT$99／月</span><span>每個群組每月 1500 則</span></p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 四個重點 ===== -->
+<div class="quick">
+  <div class="wrap quick__grid">
+    <div class="quick__item"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.8 3 2.8 15 0 18M12 3c-2.8 3-2.8 15 0 18"/></svg></span><div><b>中文 ⇄ 12 種語言</b><span>英、菲、印尼、越、泰等語言即時互譯</span></div></div>
+    <div class="quick__item"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.5 20v-1.5a4 4 0 0 0-4-4h-5a4 4 0 0 0-4 4V20"/><circle cx="9" cy="7.5" r="3.5"/><path d="m16.5 11 2 2 3.5-4"/></svg></span><div><b>外籍夥伴不用設定</b><span>直接用自己的語言打字即可</span></div></div>
+    <div class="quick__item"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10.5" width="14" height="10" rx="2"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></svg></span><div><b>不保存訊息內容</b><span>文字僅用於即時翻譯</span></div></div>
+    <div class="quick__item"><span class="ico ico--orange"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M15 9.5c-.5-1-1.6-1.5-3-1.5-1.7 0-3 .8-3 2s1 1.8 3 2 3 .8 3 2-1.3 2-3 2c-1.4 0-2.5-.5-3-1.5"/></svg></span><div><b>NT$99／月</b><span>新群組先免費試用 7 天</span></div></div>
+  </div>
+</div>
+
+<!-- ===== 翻譯示範 ===== -->
+<section class="section" id="demo">
+  <div class="wrap demo">
+    <div class="demo__copy" data-reveal>
+      <p class="kicker">翻譯示範</p>
+      <h2 class="h2">主管打中文，夥伴看母語。<br>夥伴回母語，主管看中文。</h2>
+      <p class="lead">排班、加班、請假，這些天天在講的事，不用再靠比手畫腳或另外開翻譯 App。機器人就在群組裡，訊息一送出，譯文馬上跟上。</p>
+      <ul class="ticks">
+        <li>譯文會引用原訊息，並用國旗標示語言，一眼就能對上是誰說的</li>
+        <li>一個群組可同時翻成最多 4 種外語，多國籍團隊也適用</li>
+        <li>保留名字、數字、日期與網址</li>
+      </ul>
+      <div class="switch">
+        <p class="switch__label">換個語言看看：</p>
+        <div class="chips" role="group" aria-label="切換示範語言">
+          <button class="chip" type="button" data-lang="vi" aria-pressed="true"><img class="flag" src="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/flags/4x3/vn.svg" alt="" width="22" height="17">越南文</button>
+          <button class="chip" type="button" data-lang="id" aria-pressed="false"><img class="flag" src="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/flags/4x3/id.svg" alt="" width="22" height="17">印尼文</button>
+          <button class="chip" type="button" data-lang="th" aria-pressed="false"><img class="flag" src="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/flags/4x3/th.svg" alt="" width="22" height="17">泰文</button>
+          <button class="chip" type="button" data-lang="fil" aria-pressed="false"><img class="flag" src="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/flags/4x3/ph.svg" alt="" width="22" height="17">菲律賓文</button>
+        </div>
+        <p class="demo__note">示意畫面，實際譯文以機器人在群組中的回覆為準。</p>
+      </div>
+    </div>
+
+    <div class="phone" data-reveal>
+      <div class="phone__screen">
+        <div class="phone__top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg>A 廠早班群組 <small>(12)</small></div>
+        <div class="chat" id="chat" aria-label="LINE 群組翻譯示範對話">
+          <div class="msg msg--me" style="--i:0"><div class="bubble">明天早上 7 點開始加班，記得戴安全帽。</div></div>
+
+          <div class="msg msg--bot" style="--i:1">
+            <span class="avatar avatar--bot" aria-hidden="true"><svg viewBox="0 0 24 24" fill="#fff"><path d="M5 4h14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-7l-5 4v-4H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/></svg></span>
+            <div>
+              <span class="msg__name">共鳴翻譯 ResoTalk</span>
+              <div class="bubble">
+                <div class="quote"><b>陳課長</b><span>明天早上 7 點開始加班，記得戴安全帽。</span></div>
+                <div class="tr"><img class="flag" data-flag src="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/flags/4x3/vn.svg" alt="" width="22" height="17"><span data-k="m1" lang="vi">Sáng mai 7 giờ bắt đầu tăng ca, nhớ đội mũ bảo hộ nhé.</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="msg msg--them" style="--i:2">
+            <span class="avatar" data-k="initial" aria-hidden="true">M</span>
+            <div>
+              <span class="msg__name" data-k="name">Minh</span>
+              <div class="bubble" data-k="m2" lang="vi">Dạ em biết rồi ạ. Thứ bảy em xin nghỉ một ngày được không ạ?</div>
+            </div>
+          </div>
+
+          <div class="msg msg--bot" style="--i:3">
+            <span class="avatar avatar--bot" aria-hidden="true"><svg viewBox="0 0 24 24" fill="#fff"><path d="M5 4h14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-7l-5 4v-4H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/></svg></span>
+            <div>
+              <span class="msg__name">共鳴翻譯 ResoTalk</span>
+              <div class="bubble">
+                <div class="quote"><b data-k="name">Minh</b><span data-k="m2" lang="vi">Dạ em biết rồi ạ. Thứ bảy em xin nghỉ một ngày được không ạ?</span></div>
+                <div class="tr"><img class="flag" src="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/flags/4x3/tw.svg" alt="" width="22" height="17"><span>好的，我知道了。星期六我可以請假一天嗎？</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="msg msg--me" style="--i:4"><div class="bubble">可以，記得先跟組長換班。</div></div>
+
+          <div class="msg msg--bot" style="--i:5">
+            <span class="avatar avatar--bot" aria-hidden="true"><svg viewBox="0 0 24 24" fill="#fff"><path d="M5 4h14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-7l-5 4v-4H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/></svg></span>
+            <div>
+              <span class="msg__name">共鳴翻譯 ResoTalk</span>
+              <div class="bubble">
+                <div class="quote"><b>陳課長</b><span>可以，記得先跟組長換班。</span></div>
+                <div class="tr"><img class="flag" data-flag src="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/flags/4x3/vn.svg" alt="" width="22" height="17"><span data-k="m3" lang="vi">Được, nhớ đổi ca với tổ trưởng trước nhé.</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="phone__input" aria-hidden="true"><i>輸入訊息</i><svg viewBox="0 0 24 24"><path d="M3 20.5 21.5 12 3 3.5v6.6l11 1.9-11 1.9z"/></svg></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 特色 ===== -->
+<section class="section section--soft" id="features">
+  <div class="wrap">
+    <div class="section__head" data-reveal>
+      <p class="kicker">特色</p>
+      <h2>為工作現場設計的群組翻譯</h2>
+      <p class="sub">不用換 App、不用教同事新東西，照常在 LINE 群組裡講話就好。</p>
+    </div>
+    <div class="grid3">
+      <article class="card feature" data-reveal>
+        <span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.8 3 2.8 15 0 18M12 3c-2.8 3-2.8 15 0 18"/></svg></span>
+        <h3>12 種語言，最多同時翻 4 種</h3>
+        <p>英文、菲律賓文、印尼文、越南文、泰文、緬甸文、柬埔寨文、馬來文、尼泊爾文、孟加拉文、日文、韓文，都能與中文互譯，適合多國籍的團隊。</p>
+      </article>
+      <article class="card feature" data-reveal>
+        <span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.5 20v-1.5a4 4 0 0 0-4-4h-5a4 4 0 0 0-4 4V20"/><circle cx="9" cy="7.5" r="3.5"/><path d="m16.5 11 2 2 3.5-4"/></svg></span>
+        <h3>外籍夥伴不用設定</h3>
+        <p>直接用自己的語言打字即可。群組管理員用 <code class="cmd">/menu</code> 的按鈕選語言，不用記指令。</p>
+      </article>
+      <article class="card feature" data-reveal>
+        <span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4H4a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h3v3.5L11.5 17H20a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1z"/><path d="M8 9h8M8 12.5h5"/></svg></span>
+        <h3>誰說的，一眼對上</h3>
+        <p>譯文會引用原訊息，並用國旗標示語言，群組裡一眼就能對上。</p>
+      </article>
+      <article class="card feature" data-reveal>
+        <span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 18h19M4.5 18v-2.5a7.5 7.5 0 0 1 15 0V18M9.5 8.5V13M14.5 8.5V13"/></svg></span>
+        <h3>聽得懂工作現場的話</h3>
+        <p>針對排班、加班、薪資、宿舍、安全提醒等職場對話調整，保留名字、數字、日期與網址。</p>
+      </article>
+      <article class="card feature" data-reveal>
+        <span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10.5" width="14" height="10" rx="2"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></svg></span>
+        <h3>不保存訊息內容</h3>
+        <p>只記錄群組的語言設定、方案期間與用量次數。文字僅用於即時翻譯。詳見<a href="https://line-translate-bot.jay12c.workers.dev/privacy">隱私權政策</a>。</p>
+      </article>
+      <article class="card feature" data-reveal>
+        <span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V11M12 20V4M19 20v-6M2.5 20h19"/></svg></span>
+        <h3>額度透明，隨時可查</h3>
+        <p>每個群組每月 1500 則翻譯額度：文字每則算 1 則，圖片翻譯每張算 3 則（圖中沒有文字或失敗不扣）。隨時輸入 <code class="cmd">/status</code> 查看到期日與本月用量；「好」「ok」「哈哈」與純表情、網址不計入。</p>
+      </article>
+    </div>
+    <p class="disclaimer" data-reveal>目前自動翻譯<b>文字訊息</b>；圖片裡的文字可回覆該圖片輸入 <code class="cmd">/img</code> 翻譯（1 張圖片算 3 則額度）。語音、影片、檔案不處理。AI 翻譯可能有錯誤，勞動契約、工安指示、醫療用藥等重要事項請以專業翻譯為準。</p>
+  </div>
+</section>
+
+<!-- ===== 語言牆 ===== -->
+<section class="section" id="languages">
+  <div class="wrap">
+    <div class="section__head" data-reveal>
+      <p class="kicker">支援語言</p>
+      <h2>中文 ⇄ <span class="bignum">12</span> 種語言</h2>
+      <p class="sub">一個群組可同時翻成最多 4 種外語。同事來自哪裡，就用哪裡的話。</p>
+    </div>
+    <ul class="langs" data-reveal>
+      <li class="lang"><img src="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/flags/4x3/gb.svg" alt="" width="56" height="42" loading="lazy"><b lang="en">English</b><span>英文</span></li>
+      <li class="lang"><img src="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/flags/4x3/ph.svg" alt="" width="56" height="42" loading="lazy"><b lang="fil">Filipino</b><span>菲律賓文</span></li>
+      <li class="lang"><img src="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/flags/4x3/id.svg" alt="" width="56" height="42" loading="lazy"><b lang="id">Bahasa Indonesia</b><span>印尼文</span></li>
+      <li class="lang"><img src="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/flags/4x3/vn.svg" alt="" width="56" height="42" loading="lazy"><b lang="vi">Tiếng Việt</b><span>越南文</span></li>
+      <li class="lang"><img src="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/flags/4x3/th.svg" alt="" width="56" height="42" loading="lazy"><b lang="th">ภาษาไทย</b><span>泰文</span></li>
+      <li class="lang"><img src="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/flags/4x3/mm.svg" alt="" width="56" height="42" loading="lazy"><b lang="my">မြန်မာဘာသာ</b><span>緬甸文</span></li>
+      <li class="lang"><img src="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/flags/4x3/kh.svg" alt="" width="56" height="42" loading="lazy"><b lang="km">ភាសាខ្មែរ</b><span>柬埔寨文</span></li>
+      <li class="lang"><img src="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/flags/4x3/my.svg" alt="" width="56" height="42" loading="lazy"><b lang="ms">Bahasa Melayu</b><span>馬來文</span></li>
+      <li class="lang"><img src="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/flags/4x3/np.svg" alt="" width="56" height="42" loading="lazy"><b lang="ne">नेपाली</b><span>尼泊爾文</span></li>
+      <li class="lang"><img src="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/flags/4x3/bd.svg" alt="" width="56" height="42" loading="lazy"><b lang="bn">বাংলা</b><span>孟加拉文</span></li>
+      <li class="lang"><img src="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/flags/4x3/jp.svg" alt="" width="56" height="42" loading="lazy"><b lang="ja">日本語</b><span>日文</span></li>
+      <li class="lang"><img src="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/flags/4x3/kr.svg" alt="" width="56" height="42" loading="lazy"><b lang="ko">한국어</b><span>韓文</span></li>
+    </ul>
+    <div class="scenes" data-reveal>
+      <p>適合使用外籍員工的製造、營造、餐飲、看護、仲介與宿舍管理單位。</p>
+      <ul>
+        <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 20V9l6 3.5V9l6 3.5V5h6v15z"/><path d="M7 16h2M12 16h2M17 16h1"/></svg>製造</li>
+        <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 18h19M4.5 18v-2.5a7.5 7.5 0 0 1 15 0V18M9.5 8.5V13M14.5 8.5V13"/></svg>營造</li>
+        <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3v18M4.5 3v4.5a2.5 2.5 0 0 0 5 0V3M17 21V3c-2 1.5-3 4-3 7.5h3"/></svg>餐飲</li>
+        <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7.5-4.6-7.5-10A4.2 4.2 0 0 1 12 7.5 4.2 4.2 0 0 1 19.5 10c0 5.4-7.5 10-7.5 10z"/></svg>看護</li>
+        <li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8.5" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M2.5 19a6 6 0 0 1 12 0M15.5 19a4 4 0 0 1 6 -3.2"/></svg>仲介</li>
+        <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 19V6M3 15h18v4M21 15v-2a3 3 0 0 0-3-3h-7v5"/><circle cx="7" cy="11.5" r="1.8"/></svg>宿舍管理</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 使用方式 ===== -->
+<section class="section section--soft" id="how">
+  <div class="wrap">
+    <div class="section__head" data-reveal>
+      <p class="kicker">使用方式</p>
+      <h2>三個步驟，群組馬上會翻譯</h2>
+    </div>
+    <div class="how">
+      <div data-reveal>
+        <ol class="steps">
+          <li class="card step"><span class="step__num">1</span><div><h3>把機器人加進群組</h3><p>把「共鳴翻譯 ResoTalk」LINE 官方帳號加入你的群組（員工與主管同一群組即可）。</p></div></li>
+          <li class="card step"><span class="step__num">2</span><div><h3>開通方案</h3><p>在群組輸入 <code class="cmd">/buy</code> 購買（新群組可先免費試用 7 天），付款完成後群組自動啟用。</p></div></li>
+          <li class="card step"><span class="step__num">3</span><div><h3>選擇語言</h3><p>輸入 <code class="cmd">/menu</code>，按「切換語言」選擇外籍員工的語言。之後群組的訊息就會自動翻譯。</p></div></li>
+        </ol>
+        <p class="how__more">完整指令與多語說明：<a href="https://line-translate-bot.jay12c.workers.dev/guide">使用說明</a></p>
+      </div>
+      <aside class="card qr" data-reveal>
+        <div class="qr__img"><img src="https://qr-official.line.me/gs/M_303cuvvs_GW.png" alt="共鳴翻譯 ResoTalk LINE 官方帳號 QR Code" width="176" height="176" loading="lazy"></div>
+        <h3>用手機掃描，<br>加入 LINE 官方帳號</h3>
+        <p>LINE ID：@303cuvvs</p>
+        <a class="btn btn--line btn--block" href="https://line.me/R/ti/p/@303cuvvs" rel="noopener">加入 LINE 官方帳號</a>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 價格 ===== -->
+<section class="section" id="pricing">
+  <div class="wrap">
+    <div class="section__head" data-reveal>
+      <p class="kicker">價格與付款</p>
+      <h2>一個群組，每月 NT$99</h2>
+      <p class="sub">新群組先免費試用 7 天，首次扣款前取消不扣款。</p>
+    </div>
+    <div class="plans">
+      <article class="card plan plan--hot" data-reveal>
+        <span class="plan__badge">新群組免費試用 7 天</span>
+        <h3>月訂閱<small>信用卡自動扣款</small></h3>
+        <p class="plan__price">NT$99<small>／月</small></p>
+        <p class="plan__desc">新群組先<b>免費試用 7 天</b>；之後每月自動扣款，首次扣款前取消不扣款。</p>
+        <a class="btn btn--line btn--block" href="https://line.me/R/ti/p/@303cuvvs" rel="noopener">加入 LINE 開始試用</a>
+        <p class="plan__hint">加入群組後輸入 <code class="cmd">/buy</code></p>
+      </article>
+      <article class="card plan" data-reveal>
+        <h3>單次購買<small>不自動續扣</small></h3>
+        <p class="plan__price">NT$99<small>／30 天</small></p>
+        <p class="plan__desc">預付一次，不會自動續扣；可重複購買，期間往後累加。</p>
+        <a class="btn btn--outline btn--block" href="https://line.me/R/ti/p/@303cuvvs" rel="noopener">加入 LINE 官方帳號</a>
+        <p class="plan__hint">加入群組後輸入 <code class="cmd">/buy</code></p>
+      </article>
+    </div>
+    <ul class="notes" data-reveal>
+      <li>每個群組每月可翻譯 <b>1500 則</b>（文字每則算 1 則，圖片翻譯每張算 3 則），用完當月暫停，次月 1 日（台灣時間）恢復。</li>
+      <li>價格為新台幣；付款方式：<b>信用卡</b>，由<b>藍新金流</b>處理，本服務不會取得您的完整卡號。</li>
+      <li>可開立發票，請聯絡客服提供抬頭與統一編號。</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ===== 取消與退款 ===== -->
+<section class="section section--soft" id="policy">
+  <div class="wrap">
+    <div class="section__head" data-reveal>
+      <p class="kicker">取消與退款政策</p>
+      <h2>想停就停，規則寫清楚</h2>
+    </div>
+    <div class="card narrow" data-reveal>
+      <ul class="policy">
+        <li><b>月訂閱</b>：在 LINE 群組輸入 <code class="cmd">/cancel</code> 即可取消（限當初訂閱的人或管理員）。<b>首次扣款日之前取消不會扣款</b>；取消後不再續扣，服務保留到已付款的期間結束。付款前的確認頁會清楚顯示金額、首次扣款日與每月扣款日，並需勾選同意。</li>
+        <li><b>單次購買</b>：預付後增加 30 天期間，不會自動續扣。</li>
+        <li><b>退費</b>：已付款或已扣款的金額，不予退費（法律另有規定者，從其規定）。</li>
+        <li>扣款失敗不會自動補扣，服務於已付期間結束後停止，可再次購買。</li>
+        <li>詳細內容請見<a href="https://line-translate-bot.jay12c.workers.dev/terms">服務條款</a>與<a href="https://line-translate-bot.jay12c.workers.dev/privacy">隱私權政策</a>。</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 常見問題 ===== -->
+<section class="section" id="faq">
+  <div class="wrap">
+    <div class="section__head" data-reveal>
+      <p class="kicker">常見問題</p>
+      <h2>開始之前，你可能想知道</h2>
+    </div>
+    <div class="faq narrow" data-reveal>
+      <details open>
+        <summary>會保存我們群組的訊息嗎？</summary>
+        <p>不會保存訊息內容，只記錄群組的語言設定、方案期間與用量次數。文字僅用於即時翻譯。詳見<a href="https://line-translate-bot.jay12c.workers.dev/privacy">隱私權政策</a>。</p>
+      </details>
+      <details>
+        <summary>外籍員工需要另外設定什麼嗎？</summary>
+        <p>不需要。外籍夥伴直接用自己的語言打字即可；語言由群組管理員用 <code class="cmd">/menu</code> 的按鈕選擇，不用記指令。</p>
+      </details>
+      <details>
+        <summary>一個群組可以同時翻幾種語言？</summary>
+        <p>一個群組可同時翻成最多 4 種外語，適合多國籍的團隊。</p>
+      </details>
+      <details>
+        <summary>每月 1500 則怎麼算？用完會怎樣？</summary>
+        <p>文字每則算 1 則，圖片翻譯每張算 3 則（圖中沒有文字或失敗不扣）；「好」「ok」「哈哈」與純表情、網址不計入。用完當月暫停，次月 1 日（台灣時間）恢復。隨時輸入 <code class="cmd">/status</code> 可查看到期日與本月用量。</p>
+      </details>
+      <details>
+        <summary>圖片、語音、影片也能翻譯嗎？</summary>
+        <p>目前自動翻譯文字訊息；圖片裡的文字可回覆該圖片輸入 <code class="cmd">/img</code> 翻譯（1 張圖片算 3 則額度）。語音、影片、檔案不處理。</p>
+      </details>
+      <details>
+        <summary>怎麼取消訂閱？可以退費嗎？</summary>
+        <p>在 LINE 群組輸入 <code class="cmd">/cancel</code> 即可取消（限當初訂閱的人或管理員）。首次扣款日之前取消不會扣款；取消後不再續扣，服務保留到已付款的期間結束。已付款或已扣款的金額，不予退費（法律另有規定者，從其規定）。</p>
+      </details>
+      <details>
+        <summary>可以開發票嗎？</summary>
+        <p>可開立發票，請聯絡客服提供抬頭與統一編號。</p>
+      </details>
+      <details>
+        <summary>翻譯會不會出錯？</summary>
+        <p>AI 翻譯可能有錯誤，勞動契約、工安指示、醫療用藥等重要事項請以專業翻譯為準。</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 公司與聯絡 ===== -->
+<section class="section section--soft" id="company">
+  <div class="wrap">
+    <div class="section__head" data-reveal>
+      <p class="kicker">公司與聯絡</p>
+      <h2>有問題，直接找我們</h2>
+    </div>
+    <div class="card narrow" data-reveal>
+      <dl class="rows">
+        <div><dt>營運單位</dt><dd>睿索科技有限公司</dd></div>
+        <div><dt>統一編號</dt><dd>60354656</dd></div>
+        <div><dt>客服</dt><dd>客服信箱 jay12c@resomap.app／LINE 客服 <a href="https://line.me/ti/p/D9ghqxrWkC" rel="noopener">https://line.me/ti/p/D9ghqxrWkC</a></dd></div>
+        <div><dt>服務內容</dt><dd>LINE 群組文字訊息翻譯（軟體服務，線上提供）</dd></div>
+        <div><dt>相關文件</dt><dd><a href="https://line-translate-bot.jay12c.workers.dev/terms">服務條款</a>　<a href="https://line-translate-bot.jay12c.workers.dev/privacy">隱私權政策</a>　<a href="https://line-translate-bot.jay12c.workers.dev/guide">使用說明</a></dd></div>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 結尾行動呼籲 ===== -->
+<section class="final">
+  <div class="wrap final__in">
+    <div data-reveal>
+      <h2>讓群組裡的每一句話，<br>都被聽懂。</h2>
+      <p>加入 LINE 官方帳號，把共鳴翻譯 ResoTalk 邀進你的群組。新群組免費試用 7 天，之後每月 NT$99。</p>
+      <a class="btn btn--white" href="https://line.me/R/ti/p/@303cuvvs" rel="noopener">加入 LINE 官方帳號</a>
+    </div>
+    <div class="final__qr" data-reveal>
+      <img src="https://qr-official.line.me/gs/M_303cuvvs_GW.png" alt="共鳴翻譯 ResoTalk LINE 官方帳號 QR Code" width="168" height="168" loading="lazy">
+      <span>手機掃描加入</span>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <span>© 睿索科技有限公司　共鳴翻譯 ResoTalk</span>
+    <nav aria-label="頁尾連結">
+      <a href="https://line-translate-bot.jay12c.workers.dev/terms">服務條款</a>
+      <a href="https://line-translate-bot.jay12c.workers.dev/privacy">隱私權政策</a>
+      <a href="https://line-translate-bot.jay12c.workers.dev/guide">使用說明</a>
+      <a href="#policy">取消與退款</a>
+      <a href="#company">公司與聯絡</a>
+    </nav>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var doc=document, header=doc.querySelector('.site-header'), nav=doc.getElementById('nav'), toggle=doc.querySelector('.nav-toggle');
+
+  // 手機選單
+  function closeNav(){nav.classList.remove('is-open');toggle.setAttribute('aria-expanded','false');}
+  toggle.addEventListener('click',function(){
+    var open=nav.classList.toggle('is-open');
+    toggle.setAttribute('aria-expanded',open?'true':'false');
+  });
+  nav.addEventListener('click',function(e){if(e.target.tagName==='A'){closeNav();}});
+
+  // 捲動時導覽列加陰影
+  function onScroll(){header.classList.toggle('is-stuck',window.scrollY>8);}
+  window.addEventListener('scroll',onScroll,{passive:true});onScroll();
+
+  // 進場動畫
+  var items=doc.querySelectorAll('[data-reveal]'), chat=doc.getElementById('chat');
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(entries){
+      entries.forEach(function(en){if(en.isIntersecting){en.target.classList.add('is-in');io.unobserve(en.target);}});
+    },{threshold:0.15,rootMargin:'0px 0px -6% 0px'});
+    items.forEach(function(el){io.observe(el);});
+    io.observe(chat);
+  }else{
+    items.forEach(function(el){el.classList.add('is-in');});
+    chat.classList.add('is-in');
+  }
+
+  // 翻譯示範：切換語言
+  var FLAG='https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/flags/4x3/';
+  var DEMO={
+    vi:{flag:'vn',name:'Minh',initial:'M',
+      m1:'Sáng mai 7 giờ bắt đầu tăng ca, nhớ đội mũ bảo hộ nhé.',
+      m2:'Dạ em biết rồi ạ. Thứ bảy em xin nghỉ một ngày được không ạ?',
+      m3:'Được, nhớ đổi ca với tổ trưởng trước nhé.'},
+    id:{flag:'id',name:'Budi',initial:'B',
+      m1:'Besok lembur mulai jam 7 pagi, jangan lupa pakai helm pengaman.',
+      m2:'Baik, Pak. Hari Sabtu saya boleh izin libur satu hari?',
+      m3:'Boleh, jangan lupa tukar shift dulu dengan ketua regu.'},
+    th:{flag:'th',name:'Somchai',initial:'S',
+      m1:'พรุ่งนี้เริ่มทำโอทีตอน 7 โมงเช้า อย่าลืมใส่หมวกนิรภัยนะ',
+      m2:'รับทราบครับ วันเสาร์ผมขอลาหยุดหนึ่งวันได้ไหมครับ',
+      m3:'ได้ อย่าลืมแลกกะกับหัวหน้าทีมก่อนนะ'},
+    fil:{flag:'ph',name:'Jun',initial:'J',
+      m1:'Bukas ng 7 ng umaga magsisimula ang overtime, huwag kalimutang magsuot ng helmet.',
+      m2:'Sige po. Puwede po ba akong mag-leave nang isang araw sa Sabado?',
+      m3:'Puwede, pero makipagpalit ka muna ng shift sa team leader.'}
+  };
+  var chips=doc.querySelectorAll('.chip');
+  function setLang(code){
+    var d=DEMO[code]; if(!d){return;}
+    chat.querySelectorAll('[data-k]').forEach(function(el){
+      el.textContent=d[el.getAttribute('data-k')];
+      if(el.hasAttribute('lang')){el.setAttribute('lang',code);}
+    });
+    chat.querySelectorAll('[data-flag]').forEach(function(img){img.src=FLAG+d.flag+'.svg';});
+    chips.forEach(function(c){c.setAttribute('aria-pressed',c.getAttribute('data-lang')===code?'true':'false');});
+    // 重新播放對話動畫
+    chat.classList.remove('is-in'); void chat.offsetWidth; chat.classList.add('is-in');
+  }
+  chips.forEach(function(c){c.addEventListener('click',function(){setLang(c.getAttribute('data-lang'));});});
+})();
+</script>
+</body>
+</html>
