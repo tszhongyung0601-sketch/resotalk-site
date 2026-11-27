@@ -324,6 +324,42 @@ footer{background:#0b1410;color:#a9b8af;padding:36px 0;font-size:14px}
   .langchips{grid-template-columns:repeat(3,1fr);gap:8px}
   .langchips li{font-size:13.5px;padding:8px 4px;gap:6px}
 }
+
+/* ===== 圖片翻譯示範 ===== */
+.demo>.langrow{grid-column:1/-1}
+.imgdemo{grid-column:1/-1;margin-top:96px;display:grid;grid-template-columns:1.08fr .92fr;gap:64px;align-items:center}
+.imgdemo__copy p.lead{color:var(--muted);font-size:17px;margin-top:18px}
+.nsteps{margin-top:26px;display:grid;gap:13px;counter-reset:n}
+.nsteps li{display:flex;gap:12px;align-items:flex-start;font-weight:500;counter-increment:n}
+.nsteps li::before{content:counter(n);flex:none;width:24px;height:24px;margin-top:2px;border-radius:50%;background:var(--orange-bright);color:var(--orange-ink);font:700 13.5px/24px var(--sans);text-align:center}
+.imgdemo__fig{order:-1;background:#c9d8e8;color:#1a1f24;border-radius:32px;padding:30px 26px 32px;display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1.12fr);gap:16px;align-items:center;box-shadow:0 26px 56px rgba(8,45,26,.2)}
+.imgdemo__col{display:grid;gap:8px;min-width:0}
+.imgdemo__label{font-size:12px;font-weight:700;letter-spacing:.04em;color:#48535f;padding-left:4px}
+.shot{position:relative;aspect-ratio:3/4;border-radius:16px;overflow:hidden;display:grid;place-items:center;background-color:#b78b5c;background-image:radial-gradient(rgba(255,255,255,.16) 1px,transparent 1.6px),radial-gradient(rgba(60,30,5,.22) 1px,transparent 1.6px);background-size:9px 9px,13px 13px;background-position:0 0,4px 6px;box-shadow:inset 0 0 46px rgba(50,25,5,.4),0 1px 2px rgba(0,0,0,.14)}
+.paper{position:relative;width:82%;background:#fdfcf6;color:#1d1d1d;padding:24px 12px 14px;transform:rotate(-2.2deg);box-shadow:0 8px 16px rgba(40,20,0,.34);font-size:13px;line-height:1.65;font-weight:500}
+.paper::before{content:"";position:absolute;left:50%;top:6px;width:13px;height:13px;margin-left:-6px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ff9a88,#d92b1c 60%,#9d150b);box-shadow:0 3px 4px rgba(0,0,0,.35)}
+.paper b{display:block;text-align:center;font:700 20px/1.3 var(--serif);letter-spacing:.5em;text-indent:.5em;color:#c21f1f;margin-bottom:8px}
+.paper span{display:block;text-align:right;margin-top:10px;font-size:12px}
+.imgdemo__go{display:grid;justify-items:center;gap:8px;text-align:center}
+.imgdemo__go small{font-size:11.5px;line-height:1.4;font-weight:500;color:#48535f}
+.imgdemo__go .cmd{background:#fff;color:#04793f;font-size:14px;padding:4px 11px;box-shadow:0 1px 1px rgba(0,0,0,.08)}
+.imgdemo__go svg{width:38px;height:38px;border-radius:50%;background:var(--orange-bright);padding:9px;fill:none;stroke:#2b1500;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.imgdemo__fig .bubble{max-width:none;border-top-left-radius:6px;padding:11px 13px 12px}
+.imgdemo__lines{display:grid;gap:3px;font-size:14px;line-height:1.5;min-width:0}
+.imgdemo__lines b{font-weight:700}
+@media (max-width:900px){
+  .imgdemo{grid-template-columns:1fr;gap:36px;margin-top:64px}
+  .imgdemo__fig{order:0;width:100%;max-width:620px;margin:0 auto}
+}
+@media (max-width:720px){
+  .imgdemo{margin-top:52px}
+  .imgdemo__fig{grid-template-columns:1fr;gap:14px;padding:22px 18px 24px;border-radius:26px}
+  .shot{width:min(230px,100%);margin:0 auto}
+  .imgdemo__col:first-child{justify-items:center}
+  .imgdemo__go{grid-auto-flow:column;justify-content:center;align-items:center;gap:10px}
+  .imgdemo__go br{display:none}
+  .imgdemo__go svg{transform:rotate(90deg)}
+}
 </style>
 </head>
 <body>
@@ -521,6 +557,55 @@ footer{background:#0b1410;color:#a9b8af;padding:36px 0;font-size:14px}
       </div>
     </div>
 
+    <div class="imgdemo" id="image" data-reveal>
+      <div class="imgdemo__copy">
+        <p class="kicker">圖片翻譯</p>
+        <h2 class="h2">公告、班表拍張照，<br>圖裡的字也能翻。</h2>
+        <p class="lead">貼在公佈欄的公告、班表或單據，不用自己重打一遍。把照片傳到群組，機器人把圖裡的文字翻好，貼回群組。</p>
+        <ol class="nsteps">
+          <li><span>把照片傳到群組</span></li>
+          <li><span>回覆那張照片，輸入 <code class="cmd">/img</code>；也可以在傳完圖片後 10 分鐘內輸入，或按選單上的「翻譯剛傳的圖片」</span></li>
+          <li><span>譯文以文字貼回群組</span></li>
+        </ol>
+        <p class="demo__note">圖片不會自動翻譯，只有輸入 <code class="cmd">/img</code> 時才處理那一張。1 張圖片算 3 則額度，圖中沒有文字或失敗不扣。語音、影片、檔案不處理。示意畫面，實際譯文以機器人在群組中的回覆為準。</p>
+      </div>
+
+      <div class="imgdemo__fig" id="imgdemo">
+        <div class="imgdemo__col">
+          <span class="imgdemo__label">群組裡的照片</span>
+          <div class="shot">
+            <div class="paper">
+              <b>公告</b>
+              <p>本週六全廠停電保養</p>
+              <p>早班照常上班</p>
+              <p>中班、夜班停工一天</p>
+              <span>管理部</span>
+            </div>
+          </div>
+        </div>
+        <div class="imgdemo__go" aria-hidden="true">
+          <small>回覆照片<br>輸入</small>
+          <code class="cmd">/img</code>
+          <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </div>
+        <div class="imgdemo__col">
+          <span class="imgdemo__label">共鳴翻譯的回覆</span>
+          <div class="bubble">
+            <div class="quote"><b>陳課長</b><span>/img</span></div>
+            <div class="tr"><img class="flag" data-flag src="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/flags/4x3/vn.svg" alt="" width="22" height="17" loading="lazy">
+              <div class="imgdemo__lines">
+                <b data-k="n0" lang="vi">THÔNG BÁO</b>
+                <span data-k="n1" lang="vi">Thứ Bảy tuần này toàn nhà máy cắt điện để bảo trì</span>
+                <span data-k="n2" lang="vi">Ca sáng vẫn đi làm bình thường</span>
+                <span data-k="n3" lang="vi">Ca chiều và ca đêm nghỉ một ngày</span>
+                <span data-k="n4" lang="vi">Phòng Quản lý</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="langrow" id="languages" data-reveal>
       <h3>中文 ⇄ <span class="bignum">12</span> 種語言</h3>
       <p>一個群組可同時翻成最多 4 種外語。同事來自哪裡，就用哪裡的話。</p>
@@ -639,7 +724,7 @@ footer{background:#0b1410;color:#a9b8af;padding:36px 0;font-size:14px}
         <p>需要。新的群組首次訂閱月訂閱，享 7 天免費試用（試用期間翻譯總量上限 300 則）。綁定信用卡時，藍新金流會先授權 NT$10 以確認卡片有效，並立即取消，不會請款。試用結束後的首次扣款日才會第一次扣款 NT$99；在那之前輸入 <code class="cmd">/cancel</code> 取消，不會扣款。曾經試用過的群組綁定後立即扣款。</p>
       </details>
       <details>
-        <summary>圖片、語音、影片也能翻譯嗎？</summary>
+        <summary>圖片裡的文字也能翻譯嗎？</summary>
         <p>目前自動翻譯文字訊息；圖片裡的文字可回覆該圖片輸入 <code class="cmd">/img</code> 翻譯（1 張圖片算 3 則額度），也可以在傳完圖片後 10 分鐘內輸入 <code class="cmd">/img</code>，或按選單上的「翻譯剛傳的圖片」。語音、影片、檔案不處理。</p>
       </details>
       <details>
@@ -753,28 +838,42 @@ footer{background:#0b1410;color:#a9b8af;padding:36px 0;font-size:14px}
     vi:{flag:'vn',name:'Minh',initial:'M',
       m1:'Sáng mai 7 giờ bắt đầu tăng ca, nhớ đội mũ bảo hộ nhé.',
       m2:'Dạ em biết rồi ạ. Thứ bảy em xin nghỉ một ngày được không ạ?',
-      m3:'Được, nhớ đổi ca với tổ trưởng trước nhé.'},
+      m3:'Được, nhớ đổi ca với tổ trưởng trước nhé.',
+      n0:'THÔNG BÁO',n1:'Thứ Bảy tuần này toàn nhà máy cắt điện để bảo trì',
+      n2:'Ca sáng vẫn đi làm bình thường',n3:'Ca chiều và ca đêm nghỉ một ngày',n4:'Phòng Quản lý'},
     id:{flag:'id',name:'Budi',initial:'B',
       m1:'Besok lembur mulai jam 7 pagi, jangan lupa pakai helm pengaman.',
       m2:'Baik, Pak. Hari Sabtu saya boleh izin libur satu hari?',
-      m3:'Boleh, jangan lupa tukar shift dulu dengan ketua regu.'},
+      m3:'Boleh, jangan lupa tukar shift dulu dengan ketua regu.',
+      n0:'PENGUMUMAN',n1:'Sabtu ini listrik seluruh pabrik dipadamkan untuk perawatan',
+      n2:'Shift pagi tetap masuk seperti biasa',n3:'Shift sore dan shift malam libur satu hari',n4:'Bagian Manajemen'},
     th:{flag:'th',name:'Somchai',initial:'S',
       m1:'พรุ่งนี้เริ่มทำโอทีตอน 7 โมงเช้า อย่าลืมใส่หมวกนิรภัยนะ',
       m2:'รับทราบครับ วันเสาร์ผมขอลาหยุดหนึ่งวันได้ไหมครับ',
-      m3:'ได้ อย่าลืมแลกกะกับหัวหน้าทีมก่อนนะ'},
+      m3:'ได้ อย่าลืมแลกกะกับหัวหน้าทีมก่อนนะ',
+      n0:'ประกาศ',n1:'วันเสาร์นี้ทั้งโรงงานจะดับไฟเพื่อซ่อมบำรุง',
+      n2:'กะเช้าทำงานตามปกติ',n3:'กะบ่ายและกะดึกหยุดงานหนึ่งวัน',n4:'ฝ่ายบริหาร'},
     fil:{flag:'ph',name:'Jun',initial:'J',
       m1:'Bukas ng 7 ng umaga magsisimula ang overtime, huwag kalimutang magsuot ng helmet.',
       m2:'Sige po. Puwede po ba akong mag-leave nang isang araw sa Sabado?',
-      m3:'Puwede, pero makipagpalit ka muna ng shift sa team leader.'}
+      m3:'Puwede, pero makipagpalit ka muna ng shift sa team leader.',
+      n0:'PAUNAWA',n1:'Ngayong Sabado, walang kuryente sa buong pabrika dahil sa maintenance',
+      n2:'Tuloy ang pasok ng morning shift',n3:'Walang pasok nang isang araw ang afternoon shift at night shift',n4:'Pamunuan'}
   };
-  var chips=doc.querySelectorAll('.chip');
-  function setLang(code){
-    var d=DEMO[code]; if(!d){return;}
-    chat.querySelectorAll('[data-k]').forEach(function(el){
-      el.textContent=d[el.getAttribute('data-k')];
+  var chips=doc.querySelectorAll('.chip'), imgdemo=doc.getElementById('imgdemo');
+  function fill(root,d,code){
+    root.querySelectorAll('[data-k]').forEach(function(el){
+      var v=d[el.getAttribute('data-k')];
+      if(v===undefined){return;}
+      el.textContent=v;
       if(el.hasAttribute('lang')){el.setAttribute('lang',code);}
     });
-    chat.querySelectorAll('[data-flag]').forEach(function(img){img.src=FLAG+d.flag+'.svg';});
+    root.querySelectorAll('[data-flag]').forEach(function(img){img.src=FLAG+d.flag+'.svg';});
+  }
+  function setLang(code){
+    var d=DEMO[code]; if(!d){return;}
+    fill(chat,d,code);
+    if(imgdemo){fill(imgdemo,d,code);}
     chips.forEach(function(c){c.setAttribute('aria-pressed',c.getAttribute('data-lang')===code?'true':'false');});
     // 重新播放對話動畫
     chat.classList.remove('is-in'); void chat.offsetWidth; chat.classList.add('is-in');
